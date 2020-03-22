@@ -1,0 +1,46 @@
+.header_table, .info_precio {
+    background-color: #6E665A;
+    color: white;
+    font-weight: bold;;
+}
+
+.unidad, .info {
+    background-color: rgba(231, 225, 208, 0.41);
+    color: black;
+    text-align: center;
+}
+
+.precio {
+    background-color: #9ABBC4;
+    text-align: right;
+    color: black
+}
+
+.profile {
+    background: rgba(231, 225, 208, 0.41);
+    color: black;
+    border: 1px solid black;
+}
+
+.profile h1 {
+    text-align: center;
+    font-weight: bold;
+    padding: 2px;
+    margin: 2px;
+}
+
+#main {
+    margin: 0px 20px 0px 20px;
+}
+
+.recuadro {
+    border: 1px solid #000000;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-right {
+    text-align: right;
+}
