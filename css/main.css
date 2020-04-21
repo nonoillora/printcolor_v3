@@ -1,12 +1,17 @@
 @font-face {
-    src: url('Futura_Medium.ttf');
-    font-family: "Futura Medium";
+    font-family: 'Futura Medium';
+    src: url("Futura_Medium.ttf");
+        url("Futura_Medium.eot"), /* IE9 Compat Modes */
+        url('Futura_Medium.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+        url('Futura_Medium.woff') format('font-woff'), /* Pretty Modern Browsers */
+        url('Futura_Medium.ttf')  format('truetype'), /* Safari, Android, iOS */
+        url('Futura_Medium.svg#svgFontName') format('svg'); /* Legacy iOS */
 }
 
 body {
     font-size: 14px;
     background: white;
-    font-family:"Futura Medium";
+    font-family: "Futura Medium";
 }
 
 .amarillo {
@@ -50,15 +55,18 @@ footer {
 #map {
     height: 100%;
 }
+
 .padding5 {
     padding: 5px;
 }
-#titleIndex{
+
+#titleIndex {
     margin-left: 15px;
     font-weight: bold;
 }
-.thumbnail{
-    border:none;
+
+.thumbnail {
+    border: none;
     background: inherit;
 }
 
@@ -78,7 +86,9 @@ footer {
 }
 
 /* Hide default HTML checkbox */
-.switch input {display:none;}
+.switch input {
+    display: none;
+}
 
 /* The slider */
 .slider {
@@ -127,20 +137,25 @@ input:checked + .slider:before {
 .slider.round:before {
     border-radius: 50%;
 }
-.bordeDerecha{
+
+.bordeDerecha {
     border-right: 1px solid black;
 }
-.bordeIzquierda{
+
+.bordeIzquierda {
     border-left: 1px solid black;
 }
+
 .bordeInferior {
     border-bottom: 1px solid black;
 }
-.bordeSuperior{
+
+.bordeSuperior {
     border-top: 1px solid black;
 }
+
 .todosBordes {
-    border:1px solid black;
+    border: 1px solid black;
 }
 
 .btn-circle {
@@ -152,6 +167,7 @@ input:checked + .slider:before {
     line-height: 1.428571429;
     border-radius: 15px;
 }
+
 .btn-circle.btn-lg {
     width: 50px;
     height: 50px;
@@ -160,6 +176,7 @@ input:checked + .slider:before {
     line-height: 1.33;
     border-radius: 25px;
 }
+
 .btn-circle.btn-xl {
     width: 70px;
     height: 70px;
@@ -168,11 +185,13 @@ input:checked + .slider:before {
     line-height: 1.33;
     border-radius: 35px;
 }
-#notificacionAdminBreadcrumb{
+
+#notificacionAdminBreadcrumb {
     background-color: green;
-    color:white;
+    color: white;
 }
-#pedidoImage{
+
+#pedidoImage {
     display: block;
     text-indent: -9999px;
     width: 20px;
@@ -180,14 +199,15 @@ input:checked + .slider:before {
     background: url(http://localhost/printcolor/storage/app/public/newPedido.png);
     background-size: 20px 20px;
     margin-left: 5px;
- }
+}
+
 /*vertical align style*/
 .vertical-align {
     position: relative;
     top: 50%;
 }
 
-.tituloCat{
+.tituloCat {
     min-height: 80px;
     overflow: hidden;
 }

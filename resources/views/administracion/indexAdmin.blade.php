@@ -13,7 +13,7 @@
             <div class="panel-heading"><b>Novedades</b></div>
             <div class="panel-body text-center">
                 <div class="col-lg-4">
-                    <a href="{{url('pruesupuestos')}}" class="noUnderline">
+                    <a href="{{url('admin/presupuestos')}}" class="noUnderline">
                         <button class="btn-circle bt-xl btn btn-success">
                             <span class="glyphicon glyphicon-list-alt"></span></button>
                         <br/>

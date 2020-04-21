@@ -49,7 +49,7 @@ $(document).ready(function () {
                     dataType: 'JSON',
                     method: 'post',
                     data: {
-                        idProduct: location.pathname.split('/')[5],
+                        idProduct: location.pathname.split('/')[4],
                         nameTypePrice: $('#nameTypePriceProduct').val(),
                     },
                     headers: {
