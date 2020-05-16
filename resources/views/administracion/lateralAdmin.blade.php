@@ -1,3 +1,76 @@
+{{--
+<div class="accordion" id="accordionExample">
+    <div class="card">
+        <div class="card-header bg-light" data-toggle="collapse" data-target="#adminPedidos" aria-expanded="true">
+            <h3 class="mb-0 text-primary">
+                Pedidos
+            </h3>
+        </div>
+    </div>
+    <div class="card" aria-labelledby="headingOne" id="adminPedidos" data-parent="#accordionExample">
+        <div class="card-header @if(Request::segment(2)=='pedidos' && Request::segment(3)=='') bg-primary @endif">
+            <span class="mb-0">
+                <a href="{{url('admin/pedidos')}}"
+                   class="@if(Request::segment(2)=='pedidos' && Request::segment(3)=='') text-white @else text-primary @endif noUnderline">Ver
+                    Todos
+                </a>
+            </span>
+        </div>
+    </div>
+    <div class="card" aria-labelledby="headingOne" id="adminPedidos" data-parent="#accordionExample">
+        <div class="card-header @if(Request::segment(2)=='presupuestos')bg-primary @endif">
+            <span class="mb-0">
+            <a href="{{url('admin/presupuestos')}}"
+               class="@if(Request::segment(2)=='presupuestos') text-white @else text-primary @endif noUnderline">
+                Presupuestos
+            </a>
+                </span>
+        </div>
+    </div>
+    <div class="card" aria-labelledby="headingOne" id="adminPedidos" data-parent="#accordionExample">
+        <div class="card-header @if(Request::segment(3)=='pendientes' && Request::segment(2)=='pedidos') bg-primary @endif">
+            <span class="mb-0">
+                <a href="{{url('admin/pedidos/pendientes')}}"
+                   class="@if(Request::segment(3)=='pendientes' && Request::segment(2)=='pedidos') text-white @else text-primary @endif noUnderline">
+                    Pedidos Pendientes
+                </a>
+            </span>
+        </div>
+    </div>
+    <div class="card" aria-labelledby="headingOne" id="adminPedidos" data-parent="#accordionExample">
+        <div class="card-header @if(Request::segment(3)=='enviados' && Request::segment(2)=='pedidos') bg-primary @endif">
+            <span class="mb-0">
+                <a href="{{url('admin/pedidos/enviados')}}"
+                   class="@if(Request::segment(3)=='enviados' && Request::segment(2)=='pedidos') text-white @else text-primary @endif noUnderline">
+                    Pedidos Enviados
+                </a>
+            </span>
+        </div>
+    </div>
+    <div class="card" aria-labelledby="headingOne" id="adminPedidos" data-parent="#accordionExample">
+        <div class="card-header @if(Request::segment(3)=='pagados' && Request::segment(2)=='pedidos') bg-primary @endif">
+            <span class="mb-0">
+                <a href="{{url('admin/pedidos/pagados')}}"
+                   class="@if(Request::segment(3)=='pagados' && Request::segment(2)=='pedidos') text-white @else text-primary @endif noUnderline">
+                    Pedidos Sin Pagar
+                </a>
+            </span>
+        </div>
+    </div>
+</div>
+
+<li class="list-group-item active" data-toggle="collapse" data-target="#demo">Pedidos</li>
+<div id="demo" class="collapse show">
+    <ul class="list-group">
+        <li class="list-group-item">Cras justo odio</li>
+        <li class="list-group-item">Dapibus ac facilisis in</li>
+        <li class="list-group-item">Morbi leo risus</li>
+        <li class="list-group-item">Porta ac consectetur ac</li>
+        <li class="list-group-item">Vestibulum at eros</li>
+    </ul>
+</div>
+--}}
+
 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
     <div class="panel panel-info">
         <div class="panel-heading" role="tab" id="headingOne">
@@ -24,9 +97,11 @@
                     Pedidos Pendientes
                 </a>
                 <a href="{{url('admin/pedidos/enviados')}}"
-                   class="list-group-item noUnderline @if(Request::segment(3)=='enviados' && Request::segment(2)=='pedidos') active @endif">Pedidos Enviados</a>
+                   class="list-group-item noUnderline @if(Request::segment(3)=='enviados' && Request::segment(2)=='pedidos') active @endif">Pedidos
+                    Enviados</a>
                 <a href="{{url('admin/pedidos/pagados')}}"
-                   class="list-group-item noUnderline @if(Request::segment(3)=='pagados' && Request::segment(2)=='pedidos') active @endif">Pedidos Sin Pagar</a>
+                   class="list-group-item noUnderline @if(Request::segment(3)=='pagados' && Request::segment(2)=='pedidos') active @endif">Pedidos
+                    Sin Pagar</a>
             </ul>
         </div>
     </div>
@@ -90,9 +165,12 @@
         <div id="collapseFour" class="panel-collapse collapse in" role="tabpanel"
              aria-labelledby="headingFour">
             <ul class="list-group">
-                <a class="list-group-item noUnderline @if(Request::segment(2)=='ofertas' && Request::segment(3)=='') active @endif"  href="{{url('admin/ofertas/')}}" >Ver/Editar Ofertas</a>
-                <a class="list-group-item noUnderline @if(Request::segment(2)=='ofertas' && Request::segment(3)=='nueva') active @endif"  href="{{url('admin/ofertas/nueva')}}" >Añadir Oferta</a>
-                <a class="list-group-item noUnderline @if(Request::segment(2)=='ofertas' && Request::segment(3)=='borrar') active @endif"  href="{{url('admin/ofertas/borrar')}}">Eliminar Oferta</a>
+                <a class="list-group-item noUnderline @if(Request::segment(2)=='ofertas' && Request::segment(3)=='') active @endif"
+                   href="{{url('admin/ofertas/')}}">Ver/Editar Ofertas</a>
+                <a class="list-group-item noUnderline @if(Request::segment(2)=='ofertas' && Request::segment(3)=='nueva') active @endif"
+                   href="{{url('admin/ofertas/nueva')}}">Añadir Oferta</a>
+                <a class="list-group-item noUnderline @if(Request::segment(2)=='ofertas' && Request::segment(3)=='borrar') active @endif"
+                   href="{{url('admin/ofertas/borrar')}}">Eliminar Oferta</a>
             </ul>
         </div>
     </div>

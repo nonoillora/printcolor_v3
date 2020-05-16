@@ -11,50 +11,61 @@
             @include('administracion/notificacionBreadcrumb')
         </div>
     </div>
-    @if(is_null($pedido->company_shipping))
-        <div class="col-lg-3 text-center">
-            <button class="btn btn-primary" data-toggle="modal" data-target="#modalEmpresaSeguimiento">
-                Compañia de envio
-            </button>
-        </div>
-    @endif
-    @if(empty($pedido->num_seguimiento))
-        <div class="col-lg-3 text-center">
-            <button class="btn btn-primary" data-toggle="modal" data-target="#modalNumSeguimiento">
-                Número de seguimiento
-            </button>
-        </div>
-    @endif
-    @if($pedido->num_seguimiento!='')
-        <div class="col-lg-3 text-center">
-            <button class="btn btn-primary" data-toggle="modal" data-target="#modalEditarNumSeguimiento">
-                Editar Número de seguimiento
-            </button>
-        </div>
-    @endif
-    <div class="col-lg-3 text-center" id="divPedidoPaid">
-        @if($pedido->isPaid)
-            <span class="alert alert-success">
+        @if(is_null($pedido->company_shipping))
+            <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 text-center">
+                <button class="btn btn-primary btn-block" data-toggle="modal" data-target="#modalEmpresaSeguimiento">
+                    Compañia de envio
+                </button>
+            </div>
+        @endif
+    <div class="hidden-lg hidden-md col-sm-12 col-xs-12">
+        <br/>
+    </div>
+        @if(empty($pedido->num_seguimiento))
+            <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 text-center">
+                <button class="btn btn-primary btn-block" data-toggle="modal" data-target="#modalNumSeguimiento">
+                    Número de seguimiento
+                </button>
+            </div>
+        @endif
+    <div class="hidden-lg hidden-md col-sm-12 col-xs-12">
+        <br/>
+    </div>
+        @if($pedido->num_seguimiento!='')
+            <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 text-center">
+                <button class="btn btn-primary btn-block" data-toggle="modal" data-target="#modalEditarNumSeguimiento">
+                    Editar Núm. seguimiento
+                </button>
+            </div>
+        @endif
+        <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 text-center" id="divPedidoPaid">
+            @if($pedido->isPaid)
+                <span class="btn btn-success btn-block">
             <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="left"
-                  title="pagado el {{$pedido->paid_at}}"></span> Pagado <span class="glyphicon glyphicon-ok"></span>
+                  title="pagado el {{date_format(date_create($pedido->paid_at),'d-m-Y H:i:s')}}"></span> Pagado <span class="glyphicon glyphicon-ok"></span>
                 </span>
-        @else
-            <button class="btn btn-warning" id="setPaidPedido" data-id="{{$pedido->idPedido}}">Pagado</button>
-        @endif
+            @else
+                <button class="btn btn-warning btn-block" id="setPaidPedido" data-id="{{$pedido->idPedido}}">Pagado</button>
+            @endif
+        </div>
+    <div class="hidden-lg hidden-md col-sm-12 col-xs-12">
+        <br/>
     </div>
-    <div class="col-lg-3 text-center" id="divPedidoSent">
-        @if($pedido->isSent)
-            <span class="alert alert-success">
+    <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 text-center" id="divPedidoSent">
+            @if($pedido->isSent)
+                <button class="btn btn-success btn-block">
             <span class="glyphicon glyphicon-send" data-toggle="tooltip" data-placement="left"
-                  title="enviado el {{$pedido->sent_at}}"></span> Enviado <span class="glyphicon glyphicon-ok"></span>
-                </span>
-        @else
-            <button class="btn btn-primary" id="setSentPedido" data-id="{{$pedido->idPedido}}" data-toggle="tooltip"
-                    data-placement="top" title="Marcar pedido enviado y notificar al
-                cliente los datos del envio">Enviar pedido*
-            </button>
-        @endif
-    </div>
+                  title="enviado el {{date_format(date_create($pedido->sent_at),'d-m-Y H:i:s')}}"></span> Enviado <span class="glyphicon glyphicon-ok"></span>
+                </button>
+            @else
+                <button class="btn btn-primary btn-block" id="setSentPedido" data-id="{{$pedido->idPedido}}" data-toggle="tooltip"
+                        data-placement="top" title="Marcar pedido enviado y notificar al
+                cliente los datos del envio"
+                        @if($pedido->isPaid==0 || empty($pedido->company_shipping) || $pedido->num_seguimiento=="") disabled @endif>
+                    Enviar pedido*
+                </button>
+            @endif
+        </div>
     <div class="col-lg-12">&nbsp;</div>
     <div class="col-lg-12">
         <div class="panel panel-info">
@@ -125,19 +136,21 @@
             </ul>
         </div>
     </div>
-    <div class="col-lg-12">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-12">
         <div class="panel panel-info">
             <div class="panel-heading">
                 <h3 class="panel-title">Datos del pedido</h3>
             </div>
             <table class="table">
                 <tr>
-                    <td><b>Creado</b>: {{$pedido->created_at}}</td>
-                    <td><b>Enviado</b>: <span id="SentAt">{{$pedido->sent_at}}</span></td>
+                    <td><b>Creado</b>: {{date_format(date_create($pedido->created_at),'d-m-Y H:i:s')}}</td>
+                    <td><b>Enviado</b>: <span
+                                id="SentAt">{{date_format(date_create($pedido->sent_at),'d-m-Y H:i:s')}}</span></td>
                     <td><b>Total Pedido</b>: {{$pedido->totalPedido}}&euro;</td>
                 </tr>
                 <tr>
-                    <td><b>Empresa de transporte</b>: {{$empresaTransporte}}</td>
+                    <td><b>Empresa de transporte</b>: <span id="companyShippingSelected">{{$empresaTransporte}}</span>
+                    </td>
                     <td><b>Numero de seguimiento</b>: <span id="idNumSeguimiento">{{$pedido->num_seguimiento}}</span>
                     </td>
                     <td><b>Metodo de pago</b>: {{$metodoPago}}</td>
@@ -145,11 +158,54 @@
             </table>
         </div>
     </div>
-    <div class="col-lg-12">
+    @if($pedido->idTipoPago==2 && !empty($payer))
+        <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+            <div class="panel panel-success {{--card text-white border-success bg-success mb-3--}}">
+                <div class="panel-heading card-header">
+                    {{--<h3>--}}Datos del pago{{--</h3>--}}
+                </div>
+                <div class="{{--card-body--}}">
+                    <table class="table text-center">
+                        <tr>
+                            <td><b>Pago realizado</b></td>
+                            <td><b>Cantidad pagada</b></td>
+                            <td><b>Estado de la Transacción</b></td>
+                        </tr>
+                        <tr>
+                            <td>{{ date_format(date_create($payer->created_at),'d-m-Y H:i:s')}}</td>
+                            <td>{{$payer->amountPay}} &euro;</td>
+                            <td>{{$payer->statusTransaction}}</td>
+                        </tr>
+                        <tr>
+                            <td><b>Navegador usado</b></td>
+                            <td><b>Versión navegador usado</b></td>
+                            <td><b>Plataforma</b></td>
+                            @if(!empty($payer->deviceFamily))
+                                <td><b>Dispositivo</b></td>
+                                <td><b>Modelo disposito</b></td>
+                            @endif
+                        </tr>
+                        <tr>
+                            <td>{{$payer->browser}}</td>
+                            <td>{{$payer-> version_browser}} </td>
+                            <td>{{$payer->platform}}</td>
+                            @if(!empty($payer->deviceFamily))
+                                <td>{{$payer->deviceFamily}}</td>
+                                <td>{{$payer->deviceModel}}</td>
+                            @endif
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    @endif
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <a href="{{url('admin/pedidos/')}}" class="btn btn-primary btn-block"><span
                     class="glyphicon glyphicon-chevron-left"></span> Volver</a>
     </div>
-
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <br/>
+    </div>
 
     <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel" id="modalNumSeguimiento">
         <div class="modal-dialog" role="document">
@@ -164,6 +220,7 @@
                     <input type="text" class="form-control" placeholder="Añadir número de seguimiento"
                            id="numSeguimientoPedido">
                     <br/>
+
                     <div class="alert alert-success hidden" id="infoNumSeguimientoSuccess">
                         <b>Número de seguimiento añadido correctamente</b>
                     </div>
@@ -197,7 +254,8 @@
                     <span class="hidden" id="idPedido">{{$pedido->idPedido}}</span>
                     @foreach($shipppings as $company)
                         <button class="btn btn-info btn-block empresaTransportePedido" href="{{$company->idCompany}}"
-                                data-idcompany="{{$company->idCompany}}">{{$company->name_company}}</button>
+                                data-idcompany="{{$company->idCompany}}"
+                                data-namecompany="{{$company->name_company}}">{{$company->name_company}}</button>
                     @endforeach
                     <span class="hidden" id="showInfoProcessShipping">
                         <br/>

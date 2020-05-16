@@ -9,6 +9,12 @@
     </title>
     <script type="text/javascript" src="{!! asset('js/jquery-3.1.1.min.js') !!}"></script>
     <script type="text/javascript" src="{!! asset('js/app.js') !!}"></script>
+{{--
+ Bootstrap 4 con estas lineas
+    <script type="text/javascript" src="{!! asset('vendor\twitter\bootstrap\dist\js\bootstrap.min.js') !!}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+--}}
+
     <script type="text/javascript" src="{!! asset('js/js.js') !!}"></script>
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
           integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
@@ -22,12 +28,22 @@
 <body>
 <div class="container">
     <div class="row">
-        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-            <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+            <div class="row">
+            <div class="col-lg-3 col-md-3 col-sm-12 col-12">
                 <a href="{!! url('/') !!}"><img src="{{asset('storage/app/public/logo.png')}}"
-                                                class="img-responsive center-block"/></a>
+                                                class="img-fluid img-responsive mx-auto d-block center-block"/></a>
             </div>
-            <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 text-center hidden">
+                <div class="col-lg-3 col-md-3 col-sm-12 col-12 text-center hidden-xs hidden-sm">
+                    <h1 style="font-weight: bold">¡Hazte ver!</h1>
+
+                    <h3 style="margin: 0;">Imprenta</h3>
+
+                    <h3 style="margin: 0;">Serigrafia</h3>
+
+                    <h3 style="margin-top: 5px;">Publicidad</h3>
+                </div>
+            <div class="col-lg-3 col-md-3 col-sm-12 col-12 text-center hidden d-none">
                 <h3>Impresi&oacute;n r&aacute;pida<br/>
                     y<br/>
                     Segura</h3>
@@ -48,11 +64,18 @@
                 <br/>
                 <br/>
             </div>
-            <div class="col-lg-3 col-md-3 hidden-sm hidden-xs text-center">
-                <img src="{{asset('storage/app/public/tia_sin.jpg')}}" class="center-block img-responsive" width="140px"
-                     height="140px"/>
+            <div class="col-lg-2 col-md-2 d-lg-block d-md-block d-sm-none d-none hidden-xs hidden-sm">
+                <img src="{{asset('storage/app/public/tia_sin.jpg')}}" class="img-fluid img-responsive mx-auto d-block d-lg-block d-md-none hidden-md"
+                     style="margin-top:27px;"/>
+                <img src="{{asset('storage/app/public/tia_sin.jpg')}}" class="img-fluid img-responsive mx-auto d-block d-md-block d-lg-none hidden-lg"
+                     style="margin-top:57px;"/>
             </div>
-            <div class="col-lg-3 col-md-3 hidden-sm hidden-xs"><b>Tel&eacute;fono de contacto:<br/>
+                <div class="col-lg-1 col-md-1 d-lg-block d-md-block d-sm-none d-none text-center hidden-sm hidden-xs">
+                    <br/>
+                    <br/>
+                    <img src="{{asset('storage/app/public/reloj.jpg')}}" class="img-fluid img-responsive mx-auto d-block center-block"/>
+                </div>
+            <div class="col-lg-3 col-md-3 d-lg-block d-md-block d-sm-none d-none hidden-xs hidden-sm"><b>Tel&eacute;fono de contacto:<br/>
                     657 46 41 68<br/>
                     <a href="mailto:info@printcolorillora.com">info@printcolorillora.com</a></b><br/>
                 C/Olivo 4, &Iacute;llora (Granada)<br/>
@@ -66,17 +89,18 @@
                 @endif
             </div>
         </div>
-        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        </div>
+        <div class="col-lg-12 col-md-12 col-sm-12 col-12">
             <div class="row">
-                <div class="col-lg-3">
+                <div class="col-lg-3 col-md-3 col-sm-12 col-12">
                     @include('administracion/lateralAdmin')
                 </div>
-                <div class="col-lg-9">
+                <div class="col-lg-9 col-md-9 col-sm-12 col-12">
                     @yield('adminContent')
                 </div>
             </div>
         </div>
-        <footer class="col-lg-12 col-md-12 col-sm-12 col-xs-12 text-center amarillo">
+        <footer class="col-lg-12 col-md-12 col-sm-12 col-12 text-center amarillo">
             <a href="#">T&eacute;rminos y condiciones de venta</a> - <a href="#">Aviso legal</a> - <a href="#">Pol&iacute;tica
                 de privacidad</a> - <a href="{!! url('cookies') !!}">Cookies</a>
         </footer>
@@ -95,5 +119,9 @@
 </body>
 </html>
 <link rel="stylesheet" href="{!! asset('css/app.css') !!}"/>
+
+{{-- Bootstratp 4 con esta linea css
+<link rel="stylesheet" href="{{asset('vendor\twitter\bootstrap\dist\css\bootstrap.min.css')}}"/>
+--}}
 <link rel="stylesheet" href="{!! asset('css/main.css') !!}"/>
 <link rel="stylesheet" href="{!! asset('css/animate.css') !!}"/>
