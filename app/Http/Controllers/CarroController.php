@@ -79,10 +79,10 @@ class CarroController extends Controller
             if ($request->get("diseno") == "no") {
                 $options["Diseño"] = "No requiere";
             } else if ($request->get("diseno") == "si_unacara") {
-                $options["Diseño"] = "Diseño de una cara (+12,00&euro;)";
+                $options["Diseño"] = "Diseño de una cara (+12,00 €)";
                 $price = $price + floatval(12.00);
             } else {
-                $options["Diseño"] = "Diseño de las 2 caras (+20.00&euro;)";
+                $options["Diseño"] = "Diseño de las 2 caras (+20.00 €)";
                 $price = $price + floatval(20.00);
             }
         }
@@ -121,23 +121,23 @@ class CarroController extends Controller
                     $price = $price + floatval(10.00);
                     break;
                 case 500:
-                    $options["Numeracion"] = "Si, 500 números (+15€)";
+                    $options["Numeracion"] = "Si, 500 números (+15 €)";
                     $price = $price + floatval(15.00);
                     break;
                 case 1000:
-                    $options["Numeracion"] = "Si, 1000 números (+30€)";
+                    $options["Numeracion"] = "Si, 1000 números (+30 €)";
                     $price = $price + floatval(30.00);
                     break;
                 case 2000:
-                    $options["Numeracion"] = "Si, 2000 números (+40€)";
+                    $options["Numeracion"] = "Si, 2000 números (+40 €)";
                     $price = $price + floatval(40.00);
                     break;
                 case 2500:
-                    $options["Numeracion"] = "Si, 2500 números (+45€)";
+                    $options["Numeracion"] = "Si, 2500 números (+45 €)";
                     $price = $price + floatval(45.00);
                     break;
                 case 5000:
-                    $options["Numeración"] = "Si, 5000 números (+50€)";
+                    $options["Numeración"] = "Si, 5000 números (+50 €)";
                     $price = $price + floatval(50.00);
                     break;
                 case 'no':
@@ -188,15 +188,15 @@ class CarroController extends Controller
         if ($request->has("plegado")) {
             switch ($request->get("plegado")) {
                 case 'estucado_brillo':
-                    $options["Plegado"] = "Estucado Brillo 125gr . (+9,90€)";
+                    $options["Plegado"] = "Estucado Brillo 125gr . (+9,90 €)";
                     $price = $price + floatval(9.90);
                     break;
                 case 'diptico':
-                    $options["Plegado"] = "Si (Díptico) (+9,00€)";
+                    $options["Plegado"] = "Si (Díptico) (+9,00 €)";
                     $price = $price + floatval(9.00);
                     break;
                 case 'triptico':
-                    $options["Plegado"] = "Si (Tríptico) (+9,00€)";
+                    $options["Plegado"] = "Si (Tríptico) (+9,00 €)";
                     $price = $price + floatval(9.00);
                     break;
                 case '90':
