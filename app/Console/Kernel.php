@@ -13,7 +13,8 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        Commands\DoFolderMonthBills::class
+        Commands\DoFolderMonthBills::class,
+        Commands\NotificationOrderCron::class
     ];
 
     /**
@@ -28,6 +29,7 @@ class Kernel extends ConsoleKernel
         //          ->hourly();
         $schedule->command('backup:run')->weekly()->at('0:00');
         $schedule->command('bills:generateFolder')->monthlyOn('1')->at('0:00');
+        $schedule->command('notificationOrderCron')->everyMinute()->withoutOverlapping();
     }
 
     /**

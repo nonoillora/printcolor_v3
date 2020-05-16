@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Commands;
+namespace app\Console\Commands;
 
 use Illuminate\Console\Command;
 use File;
@@ -36,7 +36,7 @@ class DoFolderMonthBills extends Command
     public function __construct()
     {
         parent::__construct();
-        $this->cronLog = new CronLog();
+        $this->cronLog = new CronLog(['command'=>$this->signature]);
         $this->cronLog->created_at = Carbon::now('Europe/Madrid');
     }
 
