@@ -20,6 +20,8 @@ class newOrderUser extends Mailable
     public $cliente;
     public $lineas;
     public $factura;
+    protected $name;
+    protected $email;
 
 
     /**
@@ -33,7 +35,8 @@ class newOrderUser extends Mailable
         $this->cliente = $cliente;
         $this->lineas = $lineas;
         $this->factura = $factura;
-
+        $this->name = env('MAIL_FROM_NAME','Print Color Illora');
+        $this->email = env('MAIL_FROM_ADDRESS','info@printcolorillora.com');
     }
 
     /**
@@ -43,8 +46,8 @@ class newOrderUser extends Mailable
      */
     public function build()
     {
-        return $this->view('notificationsMail.newOrderUser')->subject('Nuevo pedido')
+        return $this->from($this->email, $this->name)->view('notificationsMail.newOrderUser')->subject('Nuevo pedido')
         ->attachData(Helper::doBillPDF('download',$this->pedido->idPedido),$this->pedido->numIdentificacionPedido.'.pdf', [
-            'mime' => 'application/pdf']);;
+            'mime' => 'application/pdf']);
     }
 }

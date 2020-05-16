@@ -18,7 +18,8 @@ class newOrder extends Mailable
     public $cliente;
     public $lineas;
     public $factura;
-
+    protected $name;
+    protected $email;
     /**
      * Create a new message instance.
      *
@@ -30,7 +31,8 @@ class newOrder extends Mailable
         $this->cliente = $cliente;
         $this->lineas = $lineas;
         $this->factura = $factura;
-
+        $this->name = env('MAIL_FROM_NAME','Print Color Illora');
+        $this->email = env('MAIL_FROM_ADDRESS','info@printcolorillora.com');
     }
 
     /**
@@ -40,6 +42,6 @@ class newOrder extends Mailable
      */
     public function build()
     {
-        return $this->view('notificationsMail.newOrderUser')->subject('Nuevo pedido');
+        return $this->from($this->email, $this->name)->view('notificationsMail.newOrder')->subject('Nuevo pedido');
     }
 }
