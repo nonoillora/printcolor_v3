@@ -6,6 +6,7 @@ use DB;
 use Dompdf\Dompdf;
 use App\Factura;
 use Storage;
+use App\Pedido;
 
 
 class Helper
@@ -15,10 +16,11 @@ class Helper
         $cliente = DB::table('clientes')->select('*')->join('pedidos', 'idCliente', '=', 'id')->where('idPedido', $idPedido)->first();
         $lineas = DB::table('linea_pedidos')
             ->select('*')
-            ->whereIn('id', unserialize(DB::table('pedidos')->select('idLineas')->where('idPedido', $idPedido)->first()->idLineas))
+            ->whereIn('id', unserialize(DB::table('pedidos')->select('idLineas')->where('idPedido',$idPedido)->first()->idLineas))
+            ->where('lineaPedido_is_active',1)
             ->get();
         $pedido = DB::table('linea_pedidos')
-            ->whereIn('id', unserialize(DB::table('pedidos')->select('idLineas')->where('idPedido', $idPedido)->first()->idLineas))
+            ->whereIn('id', unserialize(DB::table('pedidos')->select('idLineas')->where('idPedido',$idPedido)->first()->idLineas))
             ->sum('price');
         $factura = DB::table('facturas')->select('*')->where(['idPedido' => $idPedido])->first();
         $data = array();
@@ -47,13 +49,13 @@ class Helper
 
     public static function saveBillPDF($idPedido)
     {
-        //$s= \Storage::delete(storage_path().'/app/bills/2020/2/f0bc4fc0-5402-11ea-9447-c96b1c4b13a9.pdf');
-        $s= Storage::disk('bills')->delete('2020/2/10b38740-568f-11ea-9eb0-adb7e376fdf7.pdf');
+        //$s = Storage::disk('bills')->delete('2020/3/10b38740-568f-11ea-9eb0-adb7e376fdf7.pdf');
         //dd($s);
         $cliente = DB::table('clientes')->select('*')->join('pedidos', 'idCliente', '=', 'id')->where('idPedido', $idPedido)->first();
         $lineas = DB::table('linea_pedidos')
             ->select('*')
-            ->whereIn('id', unserialize(DB::table('pedidos')->select('idLineas')->where('idPedido', $idPedido)->first()->idLineas))
+            ->whereIn('id', unserialize(DB::table('pedidos')->select('idLineas')->where('idPedido',$idPedido)->first()->idLineas))
+            ->where('lineaPedido_is_active',1)
             ->get();
         $pedido = DB::table('linea_pedidos')
             ->whereIn('id', unserialize(DB::table('pedidos')->select('idLineas')->where('idPedido', $idPedido)->first()->idLineas))
@@ -63,16 +65,35 @@ class Helper
         $data['cliente'] = $cliente;
         $data['pedido'] = $pedido;
         $dompdf = new Dompdf();
-        $factura = Factura::select('*')->where('idPedido',$idPedido)->first();
+        $factura = Factura::select('*')->where('idPedido', $idPedido)->first();
 
+        $date_pedido = Pedido::where('idPedido', $idPedido)->first();
+        $month = date_format(date_create($date_pedido->created_at),'n');
+        $year =  date_format(date_create($date_pedido->created_at),'Y');
+
+        //return view('facturas/factura1',['lineas'=>$lineas,'cliente'=> $cliente,'pedido'=>$pedido,'factura'=>$factura]);
         view()->share('lineas', $lineas);
         view()->share('cliente', $cliente);
         view()->share('pedido', $pedido);
         view()->share('factura', $factura);
         $dompdf = \PDF::loadView('facturas/factura');
         $dompdf->setPaper('A4', 'portrait');
-        $status = $dompdf->save(storage_path() . '/app/bills/' . date('Y') . '/' . date('n') . '/' . $cliente->numIdentificacionPedido . '.pdf');
-        return $status;
+        //$dompdf->render();
+        //$output = $dompdf->output();
+        //$status = file_put_contents(storage_path() . '/app/bills/' . date('Y') . '/' . date('n') . '/' . $cliente->numIdentificacionPedido . '.pdf', $output);
+        $status = $dompdf->save(storage_path() . '/app/bills/' . $year . '/' . $month . '/' . $cliente->numIdentificacionPedido . '.pdf');
+        if (!$status) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public static function checkExistsThisFolder($folder)
+    {
+        if (!Storage::disk('bills')->exists($folder)) {
+            Storage::makeDirectory($folder,0775,true);
+        }
     }
 
 }
