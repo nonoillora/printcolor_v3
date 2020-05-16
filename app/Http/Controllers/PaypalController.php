@@ -47,6 +47,7 @@ class PaypalController extends Controller
         }
         //chec if th client try to pay before....
         if($response->getData()['L_SHORTMESSAGE0']=="Duplicate invoice"){
+            //añadir aqui mail a CONFGI_MAIL
             $order->numIdentificacionPedido = Uuid::generate();
             $order->save();
             return $this->checkout(['order' => encrypt($order->numIdentificacionPedido),$request]);
