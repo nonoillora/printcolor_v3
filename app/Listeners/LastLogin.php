@@ -8,7 +8,6 @@
 
 namespace App\Listeners;
 
-use App\User;
 use Carbon\Carbon;
 use Illuminate\Auth\Events\Login;
 use DB;
@@ -16,6 +15,16 @@ use Auth;
 
 class LastLogin
 {
+
+    /**
+     * Create the event listener.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        //
+    }
     /**
      * Handle the event.
      *
@@ -26,6 +35,11 @@ class LastLogin
     {
         $last= Auth::user()->user_current_login;
         // Update user last login date/time
-        DB::table('users') ->where('id', $event->user->id) ->update(['user_last_login'=>$last,'user_current_login' => Carbon::now('Europe/madrid')]);
+        DB::table('users')->where('id', $event->user->id)->update(['user_last_login'=>$last,'user_current_login' => Carbon::now('Europe/madrid')]);
+    }
+
+    public function failed(Login $event, $exception)
+    {
+
     }
 }
