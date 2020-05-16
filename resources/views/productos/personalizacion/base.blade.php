@@ -41,7 +41,7 @@
 && $producto->id!=58 && $producto->id!=63 && $producto->id!=22 && $producto->id!=78 && $producto->id!=42 && $producto->id!=33 && $producto->id!=34 && $producto->id!=35 && $producto->id!=23 && $producto->id!=75
 && $producto->id!=76 && $producto->id!=77 && $producto->id!=25 && $producto->id!=26 && $producto->id!=27 && $producto->id!=29 && $producto->id!=30 && $producto->id!=32 && $producto->id!=10 && $producto->id!=71
 && $producto->id!=72 && $producto->id!=73 && $producto->id!=36 && $producto->id!=37 && $producto->id!=38 && $producto->id!=13 && $producto->id!=14 && $producto->id!=15 && $producto->id!=16 && $producto->id!=17
-&& $producto->id!=18 && $producto->id!=19 && $producto->id!=20 && $producto->id!=81)
+&& $producto->id!=18 && $producto->id!=19 && $producto->id!=20 && !HelperProduct::esOferta($producto->id))
     <br/>
     Seleccione tipo de acabado: {!! Form::select('acabado',['brillo'=>'Brillo','mate'=>'Mate'],null,['class'=>'form-control','required'=>'required','placeholder'=>'Seleccione una opción']) !!}
 @endif
@@ -77,11 +77,11 @@
 @endif
 
 <br/>
-@if($producto->id!=81)
+@if(!HelperProduct::esOferta($producto->id))
 ¿Cual es tu urgencia?: {!! Form::select('urgencia',['free'=>'Normal (Gratis)','pay'=>'Urgente (+4,95 €)'],null,['class'=>'form-control','required'=>'required','placeholder'=>'Seleccione una opción','id'=>'urgencia']) !!}
 <br/>
 @endif
-@if($producto->id!=37 && $producto->id!=24 && $producto->id!=81)
+@if($producto->id!=37 && $producto->id!=24 && !HelperProduct::esOferta($producto->id))
 ¿Desea diseño gráfico?:
 {!! Form::select('diseno',['no'=>'No, ya dispongo de mi diseño','si_unacara'=>'Si, deseo diseño de una cara (+12,00 €)','si_doscara'=>'Si, deseo diseño de las dos caras (+20,00 €)'],null,['class'=>'form-control','required'=>'required','placeholder'=>'Seleccione una opción','id'=>'design']) !!}
 @endif
