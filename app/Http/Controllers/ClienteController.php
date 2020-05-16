@@ -24,7 +24,6 @@ class ClienteController extends Controller
         if (Cart::content()->count() == 0) {
             return redirect()->route('cesta');
         } else {
-            //dd(Cart::content());
             return view('pedidos/registroClientePedido', ['title' => 'Confirmaci&oacute;n del pedido', 'total' => Cart::total()]);
         }
     }
