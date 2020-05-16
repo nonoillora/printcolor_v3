@@ -14,6 +14,7 @@ $(document).ready(function () {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
+        var company = $(this).data('namecompany');
         $.ajax({
             url: url + '/admin/pedidos/setCompanyShipping',
             method: 'post',
@@ -31,6 +32,9 @@ $(document).ready(function () {
                         $('#showInfoProcessShipping').addClass('hidden');
                         $('#modalEmpresaSeguimiento').modal('hide');
                     }, 3000);
+                    $('#companyShippingSelected').html(company);
+                    delete company;
+                    checkEnableButtonSetSentOrder();
                 }
 
             }, error: function (xhr, status, error) {
@@ -66,6 +70,7 @@ $(document).ready(function () {
                             $('#infoNumSeguimientoSuccess').addClass('hidden');
                             $('#numSeguimientoPedido').val('');
                         }, 3000);
+                        checkEnableButtonSetSentOrder();
                     }
                 }
             });
@@ -163,3 +168,8 @@ function checkNumSeguimiento() {
     }
 }
 
+function checkEnableButtonSetSentOrder(){
+    if($('#idNumSeguimiento').html()!='' && $('#companyShippingSelected').html()!=''){
+        $('#setSentPedido').prop('disabled', false);
+    }
+}
