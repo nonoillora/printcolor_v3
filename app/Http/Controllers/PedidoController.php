@@ -7,8 +7,9 @@ use App\Factura;
 use App\LineaPedido;
 use App\Mail\newOrder;
 use App\Mail\OrderSent;
+use App\NotificationOrder;
+use App\Payer;
 use App\Pedido;
-use Faker\Provider\ar_JO\Company;
 use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Http\Request;
 use App\Cliente;
@@ -21,7 +22,6 @@ use Carbon\Carbon;
 use Dompdf\Dompdf;
 use Helper;
 use HelperConfig;
-
 
 class PedidoController extends Controller
 {
@@ -80,7 +80,9 @@ class PedidoController extends Controller
                 if (empty($metodoPago)) {
                     $metodoPago = 'Sin definir';
                 } else {
+                    $payer = Payer::where('idPedido', $id)->first();
                     $metodoPago = $metodoPago->nombre;
+
                 }
                 return view('administracion/pedidos/detailsPedido', ['title' => 'Pedido ' . $id,
                     'pedido' => $pedido,
@@ -88,7 +90,8 @@ class PedidoController extends Controller
                     'lineas' => $lineas,
                     'shipppings' => $companys,
                     'empresaTransporte' => $companyPedido,
-                    'metodoPago' => $metodoPago]);
+                    'metodoPago' => $metodoPago,
+                    'payer' => $payer]);
             }
         } else {
             abort('404');
@@ -113,47 +116,43 @@ class PedidoController extends Controller
      */
     public function store(Request $request)
     {
-            $cliente = ClienteController::saveNewClient($request);
-            $statusC = $cliente->status;
-            $lineas = LineaPedido::where(['session_id' => $request->session()->getId()])->orderBy('updated_at', 'ASC')->get();
-            $lines = array();
-            foreach ($lineas as $linea) {
-                array_push($lines, $linea->id);
-            }
+        //creamos el nuevo cliente
+        $cliente = ClienteController::saveNewClient($request);
+        //Obtenemos las lineas de producto seleccionadas
+        $lineas = LineaPedido::where(['session_id' => $request->session()->getId()])->orderBy('updated_at', 'ASC')->get();
+        $lines = array();
+        foreach ($lineas as $linea) {
+            array_push($lines, $linea->id);
+        }
 
-            $dataPedido = array('idCliente' => $cliente->id,
-                'idLineas' => serialize($lines),
-                'idTipoPago' => '1',
-                'totalPedido' => $request->get('totalPedido'),
-                'numIdentificacionPedido' => Uuid::generate(),
-                'totalIVA' => Cart::tax(),
-                'withoutIVA' => Cart::subtotal());
-            $pedido = new Pedido($dataPedido);
-            $statusP = $pedido->save();
-            if ($statusC & $statusP) {
-                Cart::destroy();
-                $request->session()->regenerate();
-                $lineas = DB::table('linea_pedidos')
-                    ->select('*')
-                    ->whereIn('id', unserialize(DB::table('pedidos')->select('idLineas')->where('idPedido', $pedido->idPedido)->first()->idLineas))
-                    ->get();
-                $numFac = DB::table('pedidos')->where('created_at', 'like', date('Y') . '-%')->count();
-                $factura = new Factura(array('idPedido' => $pedido->idPedido, 'numeracionFactura' => $numFac . '/' . date('y')));
-                $factura->save();
-                //Mail::to($cliente->email)->send(new newOrderUser($pedido, $cliente, $lineas, $factura));
-                //Mail::to(HelperConfig::getConfig('_EMAIL_SEND_NOTIFICATION_OWN'))->send(new newOrder($pedido, $cliente, $lineas, $factura));
-                $statusSavePDF = Helper::saveBillPDF($pedido->idPedido);
-                return view('pedidos/orderSuccessRegistered', ['title' => 'Pedido Registrado']);
-            } else {
-                if ($statusP && !$statusC) {
-                    //dd('fallo cliente');
-                    return view('pedidos/orderSuccessRegistered', ['title' => 'falloPedido Registrado']);
-                }
-                if (!$statusP && $statusC) {
-                    //dd('fallo pedido');
-                    return view('pedidos/orderSuccessRegistered', ['title' => 'Fallo']);
-                }
+        /*$dataPedido = array('idCliente' => $cliente->id,
+            'idLineas' => serialize($lines),
+            'idTipoPago' => $request->get('methodPayUserSelected'),
+            'totalPedido' => $request->get('totalPedido'),
+            'numIdentificacionPedido' => Uuid::generate(),
+            'totalIVA' => Cart::tax(),
+            'withoutIVA' => Cart::subtotal());
+        $pedido = new Pedido($dataPedido);
+        $statusP = $pedido->save();*/
+        //registramos el cliente
+        $pedido = $this->saveNewPedido($cliente, $request, $lines);
+        if ($cliente->status & $pedido->status) {
+            //creamos la factura asociada al pedido en BBDD
+            FacturaController::createNewFactura($pedido);
+            //generamos el pdf de la factura -> quizas convenga hacerlo a traves de un cron como las notificaciones..
+            Helper::saveBillPDF($pedido->idPedido);
+            //Enviamos el pedido al metodo de pago seleccionado
+            return $this->getGatewayOrder($request->get('methodPayUserSelected'), $pedido);
+        } else {
+            if ($pedido->status && !$cliente->status) {
+                //dd('fallo cliente');
+                return view('pedidos/orderSuccessRegistered', ['title' => 'falloPedido Registrado']);
             }
+            if (!$pedido->status && $cliente->status) {
+                //dd('fallo pedido');
+                return view('pedidos/orderSuccessRegistered', ['title' => 'Fallo']);
+            }
+        }
     }
 
     /**
@@ -212,11 +211,11 @@ class PedidoController extends Controller
             ->select('*')
             ->whereIn('id', unserialize(DB::table('pedidos')->select('idLineas')->where('idPedido', $pedido->idPedido)->first()->idLineas))
             ->get();
-        $idCompany = DB::table('company_shippings')->join('pedidos','idCompany','=','company_shipping')->select('*')->where('idPedido','=',$pedido->idPedido)->first()->idCompany;
+        $idCompany = DB::table('company_shippings')->join('pedidos', 'idCompany', '=', 'company_shipping')->select('*')->where('idPedido', '=', $pedido->idPedido)->first()->idCompany;
         $shipping = CompanyShipping::find($idCompany);
-        $idCliente = DB::table('clientes')->join('pedidos','id','=','idCliente')->select('id')->where('idPedido','=',$pedido->idPedido)->first()->id;
+        $idCliente = DB::table('clientes')->join('pedidos', 'id', '=', 'idCliente')->select('id')->where('idPedido', '=', $pedido->idPedido)->first()->id;
         $cliente = Cliente::find($idCliente);
-        Mail::to($cliente->email)->send(new OrderSent($pedido, $cliente, $lineas,$shipping));
+        Mail::to($cliente->email)->send(new OrderSent($pedido, $cliente, $lineas, $shipping));
         return response()->json(['status' => $status, 'sent_at' => $now->toDateTimeString()]);
     }
 
@@ -300,4 +299,82 @@ class PedidoController extends Controller
         $pedidos = Pedido::where(['isPaid' => 0])->orderBy('created_at', 'DESC')->paginate(13);
         return view('administracion/pedidos/listadoPedidosNoPagados', ['title' => 'Pedidos no pagados', 'pedidos' => $pedidos]);
     }
+
+    public function orderPaypalCompleted($idPedido)
+    {
+        $pedido = Pedido::where('idPedido', $idPedido)->first();
+        $pedido->paid_at = Carbon::now();
+        $pedido->isPaid = 1;
+        $pedido->save();
+        $this->clearOrder();
+        return redirect()->to(
+            'pedido/completado')
+            ->with(['pago'=> 2,'idPedido'=>$pedido->idPedido]);
+    }
+
+    public function orderCompleted()
+    {
+        //creamos la notificacion que se le enviara al cliente sobre su pedido
+        $notification = New NotificationOrder(['idPedido' => session()->get('idPedido')]);
+        $notification->save();
+        $pago = session()->get('pago');
+        session()->forget(['pago','idPedido']);
+        return view('pedidos/orderSuccessRegistered', ['title' => 'Pedido Registrado', 'pago' => $pago]);
+    }
+
+    public function clearOrder()
+    {
+        Cart::destroy();
+        session()->regenerate();
+    }
+
+    public function updateOrder(Request $request)
+    {
+        $pedido = Pedido::where('idPedido', $request->get('idPedido'))->first();
+        $pedido->idTipoPago = $request->get('methodPayUserSelected');
+        $pedido->save();
+        return $this->getGatewayOrder($request->get('methodPayUserSelected'), $pedido);
+    }
+
+    public function getGatewayOrder($type, Pedido $pedido)
+    {
+        switch ($type) {
+            case "1"://Transferencia bancaria
+                $this->clearOrder();
+                return redirect()->to(
+                    'pedido/completado')
+                    ->with(['pago'=>1,'idPedido'=>$pedido->idPedido]);
+                break;
+            case "2"://Paypal
+                return redirect()->to(
+                    '/checkout/payment/' . encrypt($pedido->numIdentificacionPedido) . '/paypal'
+                );
+                break;
+            default:
+                dd('aqui');
+                return redirect()->back()->withInput($request->all());
+                break;
+        }
+    }
+
+    public function setNotificationTransferPaymentBuyer(Pedido $pedido, Cliente $cliente, $lineas, $factura)
+    {
+        Mail::to($cliente->email)->send(new newOrderUser($pedido, $cliente, $lineas, $factura));
+    }
+
+    public function saveNewPedido(Cliente $cliente, Request $request, $lines)
+    {
+        $dataPedido = array('idCliente' => $cliente->id,
+            'idLineas' => serialize($lines),
+            'idTipoPago' => $request->get('methodPayUserSelected'),
+            'totalPedido' => $request->get('totalPedido'),
+            'numIdentificacionPedido' => Uuid::generate(),
+            'totalIVA' => Cart::tax(),
+            'withoutIVA' => Cart::subtotal());
+        $pedido = new Pedido($dataPedido);
+        $statusP = $pedido->save();
+        $pedido->status = $statusP;
+        return $pedido;
+    }
 }
+
