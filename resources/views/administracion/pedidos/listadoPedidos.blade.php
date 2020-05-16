@@ -1,6 +1,5 @@
 @extends('administracion.adminTemplate')
 @section('titleAdmin')
-    To define
     {{$title}}
 @endsection
 @section('adminContent')
