@@ -15,6 +15,7 @@ class CreateCronLogsTable extends Migration
     {
         Schema::create('cron_logs', function (Blueprint $table) {
             $table->increments('idLog');
+            $table->string('command')->comment('Comando ejecutado');
             $table->text('result');
             $table->timestamp('cron_launch_at')->nullable();
             $table->timestamps();
