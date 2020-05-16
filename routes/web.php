@@ -149,23 +149,61 @@ Route::group([], function () {
     Route::get('cesta', 'CarroController@getIndex')->name('cesta');
     Route::get('quitarProducto/{id}', 'CarroController@quitarProducto');
     Route::get('clearCart', 'CarroController@destroyCart');
-    Route::get('confirmacion-pedido', 'ClienteController@getRegistroClientePedido');
+});
+
+Route::group(['prefix'=>'pedido'], function(){
+    Route::get('confirmacion', 'ClienteController@getRegistroClientePedido');
     Route::get('realizar-pago-pedido', 'PedidoController@getrealizarPagoPedido');
     Route::post('pedido-finalizado', 'PedidoController@getPedidoFinalizado');
-    Route::post('finished_order', 'PedidoController@store');
+    Route::post('finalizar', 'PedidoController@store');
     /*avoid reload page finish order*/
     Route::get('finished_order', function(){
         return redirect()->to('cesta');
     });
+    Route::get('completedPaypal/{idPedido}','PedidoController@orderPaypalCompleted');
+    Route::get('completado','PedidoController@orderCompleted');
+    Route::post('actualizar','PedidoController@updateOrder');
+
 });
 
-Route::get('/home', 'HomeController@index');
+//Route::get('/home', 'HomeController@index');
 
 Route::get('bill',function(){
-    $s =  \Helper::saveBillPDF(82);
+    $s =\Helper::saveBillPDF(82);
+    //return \Helper::saveBillPDF(82);
     if($s){
-        return true;
+        dd('true');
     }else{
-        return false;
+        dd('false');
     }
+});
+
+//Paypal options
+Route::group([], function(){
+    //gateway
+/*    Route::get('paypal/{order?}', [
+        'name' => 'PayPal Express Checkout',
+        'as' => 'app.home',
+        'uses' => 'PayPalController@form',
+    ]);*/
+
+    Route::get('/checkout/payment/{order}/paypal','PaypalController@checkout');// conectar a la pasarela de pago
+
+    Route::get('/paypal/checkout/{order}/completed', [
+        'name' => 'PayPal Express Checkout',
+        'as' => 'paypal.checkout.completed',
+        'uses' => 'PaypalController@completed',
+    ]);
+
+    Route::get('/paypal/checkout/{order}/cancelled', [
+        'name' => 'PayPal Express Checkout',
+        'as' => 'paypal.checkout.cancelled',
+        'uses' => 'PaypalController@cancelled',
+    ]);
+
+    Route::post('/webhook/paypal/{order?}/{env?}', [
+        'name' => 'PayPal Express IPN',
+        'as' => 'webhook.paypal.ipn',
+        'uses' => 'PaypalController@webhook',
+    ]);
 });
