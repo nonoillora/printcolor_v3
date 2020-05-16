@@ -20,7 +20,7 @@ class CategoriaController extends Controller
         if (!isset($category) || $category->category_is_active == 0) {
             abort('404');
         }
-        $categorias = DB::table('categories')->select('*')->get();
+        $categorias = DB::table('categories')->select('*')->where([['category_is_active','=','1'],['id','<>','29']])->get();
         $products = DB::table('productos')->select('*')->where(['idCategoria' => $request->id, 'product_is_active' => 1])->get();
         if (!isset($category) && $products->isEmpty()) {
             abort('404');
