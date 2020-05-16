@@ -88,7 +88,7 @@
                     </ul>
                     <a class="btn btn-warning" href="{{url('clearCart')}}"><span
                                 class="glyphicon glyphicon-shopping-cart"></span> Vaciar Cesta</a>
-                    <a class="btn btn-success pull-r" href="{{url('confirmacion-pedido')}}">Continuar</a>
+                    <a class="btn btn-success pull-r" href="{{url('pedido/confirmacion')}}">Continuar</a>
                 </div>
             </div>
         </div>
