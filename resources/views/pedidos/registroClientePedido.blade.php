@@ -8,7 +8,7 @@
             <li>
                 <a href="{{url('/')}}">Inicio</a>
                 <span class="glyphicon glyphicon-chevron-right"></span>
-                <a href="{{url('checkout')}}">Confirmación del pedido</a>
+                <a href="{{url('pedido/confirmacion')}}">Confirmación del pedido</a>
             </li>
         </ol>
     </div>
@@ -24,36 +24,36 @@
         <br/>
     </div>
     <div class="col-lg-6">
-        {!! Form::open(['method'=>'post','url'=>'finished_order','class'=>'form']) !!}
+        {!! Form::open(['method'=>'post','url'=>'pedido/finalizar','class'=>'form','id'=>"registerOrderForm"]) !!}
         Nombre Completo*
-        {!! Form::text('full_name',null,['class'=>'form-control','placeholder'=>'Introduzca su nombre','required'=>'required']) !!}
+        {!! Form::text('full_name',old('full_name'),['class'=>'form-control','placeholder'=>'Introduzca su nombre','required'=>'required']) !!}
         <br/>
         Empresa
-        {!! Form::text('enterprise',null,['class'=>'form-control','placeholder'=>'Introduzca su empresa']) !!}
+        {!! Form::text('enterprise',old('enterprise'),['class'=>'form-control','placeholder'=>'Introduzca su empresa']) !!}
         <br/>
         Móvil / Teléfono*
-        {!! Form::text('phone',null,['class'=>'form-control','placeholder'=>'Introduzca su teléfono','required'=>'required']) !!}
+        {!! Form::text('phone',old('phone'),['class'=>'form-control','placeholder'=>'Introduzca su teléfono','required'=>'required']) !!}
         <br/>
         NIF, CIF o NIE*
-        {!! Form::text('nif',null,['class'=>'form-control','placeholder'=>'Introduzca su DNI','required'=>'required']) !!}
+        {!! Form::text('nif',old('nif'),['class'=>'form-control','placeholder'=>'Introduzca su DNI','required'=>'required']) !!}
         <br/>
         Dirección completa (Con Número de vivienda)*
-        {!! Form::text('address',null,['class'=>'form-control','placeholder'=>'Introduzca su dirección','required'=>'required']) !!}
+        {!! Form::text('address',old('address'),['class'=>'form-control','placeholder'=>'Introduzca su dirección','required'=>'required']) !!}
         <br/>
         Población*
-        {!! Form::text('poblation',null,['class'=>'form-control','placeholder'=>'Introduzca su población','required'=>'required']) !!}
+        {!! Form::text('poblation',old('poblation'),['class'=>'form-control','placeholder'=>'Introduzca su población','required'=>'required']) !!}
         <br/>
         Código Postal*
-        {!! Form::text('cp',null,['class'=>'form-control','placeholder'=>'Introduzca su código postal','required'=>'required']) !!}
+        {!! Form::text('cp',old('cp'),['class'=>'form-control','placeholder'=>'Introduzca su código postal','required'=>'required']) !!}
         <br/>
         Provincia*
-        {!! Form::text('provence',null,['class'=>'form-control','placeholder'=>'Introduzca su provincia','required'=>'required']) !!}
+        {!! Form::text('provence',old('provence'),['class'=>'form-control','placeholder'=>'Introduzca su provincia','required'=>'required']) !!}
         <br/>
         Email*
-        {!! Form::email('email',null,['class'=>'form-control','placeholder'=>'Introduzca su email','required'=>'required']) !!}
+        {!! Form::email('email',old('email'),['class'=>'form-control','placeholder'=>'Introduzca su email','required'=>'required','pattern'=>'[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$','title'=>'nombre@dominio']) !!}
         <br/>
         Observaciones
-        {!! Form::textarea('observations',null,['class'=>'form-control']) !!}
+        {!! Form::textarea('observations',old('observations'),['class'=>'form-control']) !!}
         <br/>
         {!! Form::checkbox('terms',1,false,['required'=>'required']) !!}&nbsp;He leído y acepto la Política de
         Protección de Datos
@@ -89,64 +89,29 @@
     </div>
 
         <div class="clearfix"></div>
-        <div>
-            <div id="paypal-button" class="col-lg-6 center-block text-center hidden" data-content="Paypal" data-id="2"></div>
-            <script src="https://www.paypalobjects.com/api/checkout.js"></script>
-            <script>
-                paypal.Button.render({
-                    // Configure environment
-                    env: 'sandbox',
-                    client: {
-                        sandbox: '{!!  HelperConfig::getConfig('_DEMO_SANDBOX_CLIENT_ID')!!}',
-                        production: '{!!  HelperConfig::getConfig('_DEMO_PRODUCTION_CLIENT_ID')!!}'
-                    },
-                    // Customize button (optional)
-                    locale: 'es_ES',
-                    style: {
-                        size: 'small',
-                        color: 'gold',
-                        shape: 'pill',
-                    },
-                    // Set up a payment
-                    payment: function (data, actions) {
-                        return actions.payment.create({
-                            transactions: [{
-                                amount: {
-                                    total: {{Cart::total()}},
-                                    currency: 'EUR'
-                                }
-                            }]
-                        });
-                    },
-                    // Execute the payment
-                    onAuthorize: function (data, actions) {
-                        return actions.payment.execute()
-                                .then(function () {
-                                    $('#isPaidOrder').val('1');
-                                    // Show a confirmation message to the buyer
-                                    window.alert('Thank you for your purchase!');
-                                });
-                    }
-                }, '#paypal-button');
-
-            </script>
-        </div>
-        <div class="col-lg-12 center-block text-center alert alert-success" id="trans_bancaria" data-content="Transferencia Bancaria" data-id="1">
+        <div class="col-lg-12 center-block text-center alert @if(old('methodPayUserSelected')==1) alert-success @else alert-info @endif" id="trans_bancaria" data-content="Transferencia Bancaria" data-id="1">
             <span class="glyphicon glyphicon-transfer"></span>
             Transferencia Bancaria
         </div>
-        <div class="clearfix"></div>
-        <div class="alert alert-warning hidden" id="divMethodPayUser">
-            Metodo seleccionado: <span id="methodPayUserSelect">Ninguno</span>
-          {!! Form::hidden('methodPayUserSelectInput','1',['id'=>'methodPayUserSelectInput','required'=>'required']) !!}
+        <div class="col-lg-12 center-block text-center alert  @if(old('methodPayUserSelected')==2) alert-success @else alert-info @endif" id="paypal-button" data-content="Paypal" data-id="2">
+            <img src="{{asset('storage/app/public/paypal-logo.png')}}"/>
+        </div>
+        <div class="col-lg-12 center-block text-center alert  @if(old('methodPayUserSelected')==3) alert-success @else alert-info @endif" id="tpv-button" data-content="TPV" data-id="3">
+            <span class="glyphicon glyphicon-credit-card"></span>
+            TPV Virtual
         </div>
 
-        {!! Form::submit('Finalizar pedido',['class'=>'form-control btn btn-success','id'=>'submitRegisterOrder']) !!}
+        <div class="clearfix"></div>
+        Metodo seleccionado:
+        {!! Form::select('methodPayUserSelected', ['0'=>'No seleccionado','1' => 'Transeferencia', '2' => 'Paypal','3'=>'TPV  Virtual'], '0',['class'=>'form-control','disabled'=>'disabled','required'=>'required','id'=>'methodPayUserSelected']) !!}
+       <br/>
+
+        {!! Form::submit('Finalizar pedido',['class'=>'form-control btn btn-success','id'=>'submitRegisterOrder', 'disabled'=>'disabled']) !!}
         {!! Form::close() !!}
     </div>
 
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <br/>
     </div>
-    <script src="{{asset('js/payments/paymentsUI.js')}}" type="text/javascript"/>
+    <script src="{{asset('js/payments/paymentsUI.js')}}" type="text/javascript"></script>
 @endsection
