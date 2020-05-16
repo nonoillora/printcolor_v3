@@ -23,7 +23,7 @@
                         @if($pedido->isPaid && !is_null($pedido->paid_at))
                             <span class="btn btn-success btn-circle" data-toggle="tooltip"
                                   data-placement="bottom"
-                                  title="Pagado el {{$pedido->paid_at}}">
+                                  title="Pagado el {{date_format(date_create($pedido->paid_at),'d-m-Y H:i:s')}}">
                                 <span class="glyphicon glyphicon-usd"></span>
                             </span>
                         @else
@@ -37,7 +37,7 @@
                         @if($pedido->isSent && !is_null($pedido->sent_at))
                             <span class="btn btn-success btn-circle" data-toggle="tooltip"
                                   data-placement="bottom"
-                                  title="Enviado el {{$pedido->sent_at}}">
+                                  title="Enviado el {{date_format(date_create($pedido->sent_at),'d-m-Y H:i:s')}}">
                                 <span class="glyphicon glyphicon-send"></span>
                             </span>
                         @else

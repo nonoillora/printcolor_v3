@@ -5,7 +5,7 @@
             <li>
                 <a href="{{url('/')}}">Inicio</a>
                 <span class="glyphicon glyphicon-chevron-right"></span>
-                <a href="{{url('checkout')}}">Confirmación del pedido</a>
+                <a href="{{url('pedido/confirmacion')}}">Confirmación del pedido</a>
             </li>
         </ol>
     </div>
