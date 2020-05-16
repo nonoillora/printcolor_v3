@@ -8,6 +8,12 @@ class Factura extends Model
 {
     protected $primaryKey = 'idFactura';
 
+    protected $table = "facturas";
+
     protected $fillable = [
-        'idPedido','numeracionFactura'];
+        'idFactura','idPedido','numeracionFactura'];
+
+    public function pedido(){
+        return $this->belongsTo(\App\Pedido::class,'idPedido','idPedido');
+    }
 }
