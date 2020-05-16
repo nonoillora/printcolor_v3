@@ -1,36 +1,53 @@
 /**
  * Created by Antonio on 28/06/2018.
  */
-$(document).ready(function(){
+$(document).ready(function () {
     $('#trans_bancaria').on('click', function () {
-        setMethodPay($('#trans_bancaria').data('content'));
         setPaymentActive('trans_bancaria');
-
     });
     $('#paypal-button').on('click', function () {
-        setMethodPay($('#paypal-button').data('content'));
         setPaymentActive('paypal-button');
     });
-
+    $('#tpv-button').on('click', function () {
+        setPaymentActive('tpv-button');
+    });
+    /* haiblitamos el select para recogerlo en el request al creazr el pedido*/
+    $('#registerOrderForm').on('submit', function() {
+        $('#methodPayUserSelected').prop('disabled', false);
+    });
+    /*Actualizar pedido...*/
+    $('#updateOrderForm').on('submit', function() {
+        $('#methodPayUserSelected').prop('disabled', false);
+    });
 });
 
-function setMethodPay(type) {
-    if (type != '') {
-        $('#methodPayUserSelect').html(type);
-        $('#divMethodPayUser').removeClass('alert-warning');
-        $('#divMethodPayUser').addClass('alert-success');
+function setPaymentActive(id) {
+    switch (id) {
+        case 'paypal-button':
+            $('#trans_bancaria').removeClass('alert-success');
+            $('#trans_bancaria').addClass('alert-info');
+            $('#paypal-button').removeClass('alert-info');
+            $('#paypal-button').addClass('alert-success');
+            $('#tpv-button').addClass('alert-info');
+            $('#tpv-button').removeClass('alert-success');
+            break;
+        case 'trans_bancaria':
+            $('#trans_bancaria').removeClass('alert-info');
+            $('#trans_bancaria').addClass('alert-success');
+            $('#paypal-button').addClass('alert-info');
+            $('#paypal-button').removeClass('alert-success');
+            $('#tpv-button').addClass('alert-info');
+            $('#tpv-button').removeClass('alert-success');
+            break;
+        case 'tpv-button':
+            $('#trans_bancaria').addClass('alert-info');
+            $('#trans_bancaria').removeClass('alert-success');
+            $('#paypal-button').addClass('alert-info');
+            $('#paypal-button').removeClass('alert-success');
+            $('#tpv-button').removeClass('alert-info');
+            $('#tpv-button').addClass('alert-success');
+            break;
     }
-}
-
-function setPaymentActive(id){
-    if(id=='paypal-button'){
-        $('#trans_bancaria').removeClass('alert alert-success');
-        $('#paypal-button').addClass('alert alert-success');
-    }
-    if(id=='trans_bancaria'){
-        $('#trans_bancaria').addClass('alert alert-success');
-        $('#paypal-button').removeClass('alert alert-success');
-    }
-    $('#methodPayUserSelectInput').val($('#'+id).data('id'));
-    $('#submitRegisterOrder').prop('disabled',false);
+    $('#methodPayUserSelected').val($('#' + id).data('id')).change();
+    $('#submitRegisterOrder').prop('disabled', false);
 }
