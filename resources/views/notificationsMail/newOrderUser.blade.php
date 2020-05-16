@@ -51,13 +51,17 @@
     </tr>
     <tr>
         <td>
-            Gracias por tu pedido. Te mandaremos otro e-mail cuando enviemos tu(s) producto(s). A continuación te
-            enviamos los pasos a seguir para realizar el pago del pedido.
+            Gracias por tu pedido. Te mandaremos otro e-mail cuando enviemos tu(s) producto(s).
+            @if(!$pedido->isPaid)
+                A continuación te enviamos los pasos a seguir para realizar el pago del pedido.
+            @endif
         </td>
     </tr>
     <tr>
         <td>
             <ol>
+                @switch($pedido->idTipoPago)
+                @case('1')
                 <li>Acuda a su entidad bancaria.</li>
                 <li>Realice una transferencia a la siguiente cuenta
                     bancaria {{HelperConfig::getConfig('_ACCOUNT_BANK_TRANSFER_PAY')}}</li>
@@ -69,6 +73,32 @@
                     adjuntando una copia de la transferencia realizada
                     (puede ser el PDF o una foto realizada con el móvil)
                 </li>
+                @break
+                @case('2')
+                @if($pedido->isPaid)
+                    <li>Su pedido se ha registrado pagado correctamente</li>
+                    <li>El pago se completo el {{date_format(date_create($pedido->paid_at),'d-m-Y H:i:s')}} a traves de
+                        <b>{{$pedido->tipoPago()->first()->nombre}}</b></li>
+                @else
+                    <li>Ha ocurrido un error en su pago</li>
+                    <li>Por favor, contacte con el dtpo de Atención al cliente en el siguiente
+                        mail: <a
+                                href="mailto:{{HelperConfig::getConfig('_EMAIL_SEND_NOTIFICATION_OWN')}}">{{HelperConfig::getConfig('_EMAIL_SEND_NOTIFICATION_OWN')}}</a>
+                    </li>
+                    {{--  <li>En el concepto de la transferencia indique el siguiente código:
+                         <b>{{$pedido->numIdentificacionPedido}}</b> (verificaremos su pedido con este código)
+                     </li>
+                     <li>Una vez realizada la transferencia, sería necesario enviad un correo a <a
+                                 href="mailto:{{HelperConfig::getConfig('_MAIL_TO_SEND_PHOTOS_FROM_ORDER')}}">{{HelperConfig::getConfig('_MAIL_TO_SEND_PHOTOS_FROM_ORDER')}}</a>
+                         adjuntando una copia de la transferencia realizada
+                         (puede ser el PDF o una foto realizada con el móvil)--}}
+                    </li>
+                @endif
+                @break
+                @case('3')
+                @break
+                @default
+                @endswitch
             </ol>
         </td>
     </tr>
@@ -76,7 +106,8 @@
         <td>
             <table width="100%" bgcolor="#e5ffd6">
                 <tr>
-                    <th bgcolor="header_table text-center" style="color:white">El pedido se enviara a esta dirección</th>
+                    <th bgcolor="header_table text-center" style="color:white">El pedido se enviara a esta dirección
+                    </th>
                 </tr>
                 <tr>
                     <td>
