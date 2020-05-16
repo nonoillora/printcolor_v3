@@ -62,13 +62,11 @@ class UtilitiesController extends Controller
     }
 
     public function generateCleanNow(){
-        $status = exec('php artisan backup:run');
-        if ($status=="Backup completed!") {
+        $status = exec('php artisan backup:clean');
+        if ($status=="Cleanup completed!") {
             return redirect()->back()->with('utilityOK', 'Limpieza completada');
         } else {
             return redirect()->back()->with('utilityKO', 'Fallo al generar limpieza.');
         }
     }
-
-
 }
