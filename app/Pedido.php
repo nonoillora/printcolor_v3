@@ -17,4 +17,15 @@ class Pedido extends Model
     {
         return $this->hasMany(\App\TipoPago::class, 'id','idTipoPago');
     }
+
+    public function cliente()
+    {
+        return $this->hasMany(\App\Cliente::class, 'id','idCliente')->first();
+    }
+
+    public function factura()
+    {
+        return $this->hasOne(\App\Factura::class, 'idPedido','idPedido')->first();
+    }
+
 }
