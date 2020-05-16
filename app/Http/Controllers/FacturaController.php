@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Factura;
 use Illuminate\Http\Request;
+use App\Pedido;
+use DB;
 
 class FacturaController extends Controller
 {
@@ -85,8 +87,10 @@ class FacturaController extends Controller
 
     public static function createNewFactura(Pedido $pedido)
     {
-        $numFac = DB::table('pedidos')->where('created_at', 'like', date('Y') . '-%')->count();
-        $factura = new Factura(array('idPedido' => $pedido->idPedido, 'numeracionFactura' => $numFac . '/' . date('y')));
+        $date_order = $pedido->created_at;
+        $year = date_format(date_create($date_order),'Y');
+        $numFac = DB::table('pedidos')->where('created_at', 'like', $year . '-%')->count();
+        $factura = new Factura(array('idPedido' => $pedido->idPedido, 'numeracionFactura' => $numFac . '/' . date_format(date_create($date_order),'y')));
         $factura->save();
     }
 }
