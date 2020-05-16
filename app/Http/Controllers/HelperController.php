@@ -45,7 +45,7 @@ class HelperController extends Controller
         if(empty($pedido)){
             return 'No existe este pedido';
         }
-        $factura = Pedido::where('idPedido', $id)->first()->factura();
+        $factura = $pedido->factura();
         if (empty($factura)) {
             FacturaController::createNewFactura($pedido);
 
