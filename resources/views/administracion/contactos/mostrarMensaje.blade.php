@@ -6,7 +6,7 @@
     <div class="breadcrumb">
         <a href="{{url('admin')}}">Administraci&oacute;n</a> <span class="glyphicon glyphicon-chevron-right"></span> <a
                 href="{{url('admin/contactos')}}">Contactos</a><span class="glyphicon glyphicon-chevron-right"></span>
-        <a href="{{url('')}}">Mensaje de {{$mensaje->nombre}}</a>
+        <a href="{{url('admin/contactos/'.$mensaje->id)}}">Mensaje de {{$mensaje->nombre}}</a>
         <div class="pull-right">
             @include('administracion/notificacionBreadcrumb')
         </div>

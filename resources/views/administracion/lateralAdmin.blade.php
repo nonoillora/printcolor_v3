@@ -188,7 +188,7 @@
         <div id="collapseFive" class="panel-collapse collapse in" role="tabpanel"
              aria-labelledby="headingSix">
             <ul class="list-group">
-                <a class="list-group-item noUnderline @if(Request::segment(2)=='contactos' && Request::segment(3)=='') active @endif"
+                <a class="list-group-item noUnderline @if(Request::segment(2)=='contactos') active @endif"
                    href="{{url('admin/contactos/')}}">Ver todos</a>
             </ul>
         </div>
