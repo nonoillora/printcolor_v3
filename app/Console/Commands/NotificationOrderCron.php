@@ -68,18 +68,22 @@ class NotificationOrderCron extends Command
                         ->whereIn('id', unserialize(DB::table('pedidos')->select('idLineas')->where('idPedido', $pedido->idPedido)->first()->idLineas))
                         ->get();
                     $factura = $notification->pedido()->factura();
+                    //Notifacicion al usuario que ha creado el pedido
                     Mail::to($cliente->email)->send(new newOrderUser($pedido, $cliente, $lineas, $factura));
-                    Mail::to(HelperConfig::getConfig('_EMAIL_SEND_NOTIFICATION_OWN'))->send(new newOrder($pedido, $cliente, $lineas, $factura));
 
                     if (count(Mail::failures()) > 0) {
                         $notification->setFailed();
                     } else {
                         $notification->setSuccess();
                     }
+                    //Notificamos al mail que haya configurado en la variable el nuevo pedido creado (administrador)
+                    Mail::to(HelperConfig::getConfig('_EMAIL_SEND_NOTIFICATION_OWN'))->send(new newOrder($pedido, $cliente, $lineas, $factura));
                 } catch (Exception $ex) {
                     $notification->setOutput($ex);
                     $notification->setFailed();
                 }
+
+
             }
             $this->cronLog->result = "Se procesaron ".count($this->notifications)." notificaciones.";
         }else{
