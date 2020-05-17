@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use DB;
+use App\Contacto;
 
 class ContactoController extends Controller
 {
@@ -17,7 +18,7 @@ class ContactoController extends Controller
         return view('administracion/contactos/listadoContactos',
             [
                 'title' => 'Mensajes',
-                'mensajes' => DB::table('contactos')->select('id', 'nombre', 'telefono', 'email', 'mensaje', 'created_at')->paginate(35)
+                'mensajes' => Contacto::select('id', 'nombre', 'telefono', 'email', 'mensaje', 'created_at')->paginate(35)
             ]);
     }
 
@@ -50,9 +51,9 @@ class ContactoController extends Controller
      */
     public function show($id)
     {
-        $mensaje = DB::table('contactos')->select('id', 'nombre', 'telefono', 'email', 'mensaje', 'created_at')->where(['id' => $id])->first();
+        $mensaje = Contacto::select('id', 'nombre', 'telefono', 'email', 'mensaje', 'created_at')->where(['id' => $id])->first();
 
-        if (is_null($mensaje) || count($mensaje) == 0) {
+        if (is_null($mensaje) || empty($mensaje)) {
             abort('404');
         } else {
             return view('administracion/contactos/mostrarMensaje',
@@ -61,7 +62,6 @@ class ContactoController extends Controller
                     'mensaje' => $mensaje
                 ]);
         }
-
     }
 
     /**

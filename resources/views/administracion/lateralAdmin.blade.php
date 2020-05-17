@@ -176,6 +176,25 @@
     </div>
     <br/>
 
+    <div class="panel panel-info">
+        <div class="panel-heading" role="tab" id="headingSix">
+            <h4 class="panel-title">
+                <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseSix"
+                   aria-expanded="true" aria-controls="collapseSix">
+                    <b>Contactos</b>
+                </a>
+            </h4>
+        </div>
+        <div id="collapseFive" class="panel-collapse collapse in" role="tabpanel"
+             aria-labelledby="headingSix">
+            <ul class="list-group">
+                <a class="list-group-item noUnderline @if(Request::segment(2)=='contactos' && Request::segment(3)=='') active @endif"
+                   href="{{url('admin/contactos/')}}">Ver todos</a>
+            </ul>
+        </div>
+    </div>
+    <br/>
+
     <div class="panel panel-danger">
         <div class="panel-heading" role="tab" id="headingFive">
             <h4 class="panel-title">
