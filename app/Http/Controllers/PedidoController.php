@@ -357,11 +357,6 @@ class PedidoController extends Controller
         }
     }
 
-    public function setNotificationTransferPaymentBuyer(Pedido $pedido, Cliente $cliente, $lineas, $factura)
-    {
-        Mail::to($cliente->email)->send(new newOrderUser($pedido, $cliente, $lineas, $factura));
-    }
-
     public function saveNewPedido(Cliente $cliente, Request $request, $lines)
     {
         $dataPedido = array('idCliente' => $cliente->id,
