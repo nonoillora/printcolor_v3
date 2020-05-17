@@ -1,11 +1,9 @@
 <!doctype html>
-<html lang="en">
+<html lang="{{ app()->getLocale() }}">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>PDF</title>
-    {{--
-        <link rel="stylesheet" href="{{asset('css/facturas/factura-pedido.css')}}" type="text/css"/>
-    --}}
+    <link rel="stylesheet" href="{{asset('css/facturas/factura-pedido.css')}}" type="text/css"/>
 
     <style type="text/css">
         .header_table, .info_precio {
@@ -39,7 +37,7 @@
             margin: 2px;
         }
 
-        #main {
+        .main {
             margin: 0px 20px 0px 20px;
         }
 
@@ -55,17 +53,22 @@
             text-align: right;
         }
 
-        .page_break {
+        table > tr {
             page-break-before: always;
         }
+
+        table > tr > td {
+            page-break-before: always;
+        }
+
 
     </style>
 </head>
 <body>
-<table width="100%" id="main" style="margin: 0px 20px 0px 20px;table-layout:fixed;" >
+<table width="100%" class="main" style="margin: 0px 20px 0px 20px;table-layout:fixed;">
     <tr>
-        <td colspan="2" style="width:35%;border:1px solid red">
-            <table class="profile" style="width:100%;border:1px solid blue">
+        <td colspan="2" style="width:35%;">
+            <table class="profile" style="width:100%;">
                 <tr>
                     <td colspan="2">
                         <h1>Angel Perez Esteban</h1>
@@ -89,7 +92,7 @@
     </tr>
     <tr>
         <td style="width:40%">
-            <table style="width:100%;border:1px solid red;table-layout:fixed;">
+            <table style="width:100%;table-layout:fixed;">
                 <tr>
                     <td class="recuadro" width="50%"
                         style="background-color: rgba(231, 225, 208, 0.41);text-align: left;">Fecha
@@ -112,7 +115,6 @@
                     <td class="text-center recuadro" width="50%">
                         1 de 1
                     </td>
-                    </td>
                 </tr>
                 <tr>
                     <td style="border-right: 1px solid white;border-left: 1px solid white;">
@@ -130,18 +132,17 @@
                     <td class="text-center recuadro" width="50%">
                         {{$factura->numeracionFactura}}
                     </td>
-                    </td>
                 </tr>
             </table>
         </td>
 
         <td style="width:70%;" colspan="2">
-            <table style="width:100%;border:1px solid red;table-layout:fixed;">
+            <table style="width:100%;table-layout:fixed;">
                 <tr>
-                    <td style="width:20%;border:1px solid blue;height:70px">
+                    <td style="width:20%;height:70px">
                     </td>
                     <td style="width:80%;height:70px">
-                        <table style="width:100%;border:1px solid yellow;table-layout:fixed;">
+                        <table style="width:100%;table-layout:fixed;">
                             <tr>
                                 <td class="info recuadro" style="width:20%">
                                     Nombre
@@ -168,7 +169,6 @@
                                 <td class="text-center recuadro" style="width:25%">
                                     {{$cliente->poblation}}
                                 </td>
-
                                 </td>
                                 <td class="info recuadro" style="width:25%">
                                     Provincia
@@ -215,104 +215,112 @@
             </table>
         </td>
     </tr>
+</table>
+<table>
     <tr>
-        <td colspan="3">&nbsp;</td>
+        <td>&nbsp;</td>
     </tr>
+</table>
+<table style="table-layout:fixed;width:100%;border:1px solid black" class="main">
     <tr>
-        <td colspan="3">
-            <table style="table-layout:fixed;width:100%;border:1px solid black">
+        <td class="header_table text-center recuadro">Unidades</td>
+        <td class="header_table recuadro">Artículo</td>
+        <td class="header_table text-center recuadro">PVD</td>
+    </tr>
+    @foreach($lineas as $linea)
+        <tr>
+            <td class="unidad recuadro" style="width:10%">1</td>
+            <td style="width:60%" class="recuadro">
+                {{unserialize($linea->description)['producto']}}
+                -
+                {{unserialize($linea->description)['Cantidad seleccionada']}}
+                -
+                {{unserialize($linea->description)['Tipo Acabado']}}
+                @if(count(unserialize($linea->options))>0)
+                    <hr/>
+                    @foreach (unserialize($linea->options) as $tipo=>$option)
+                        {{$tipo}}: {{$option}}<br/>
+                    @endforeach
+                @endif
+            </td>
+            <td class="recuadro" style="width:10%;text-align: center">{{$linea->price}} &euro;</td>
+        </tr>
+{{--
+    Con este control hacemos el salto de pagina, cerramos tabla, ponemos div para saltar y volvemos a poner las cabeceras de las tablas
+--}}
+        @if($loop->iteration%7==0)
+        </table>
+        <div style="page-break-before: always;"></div>
+        <br/>
+        <table style="table-layout:fixed;width:100%;border:1px solid black;" class="main">
+            <tr>
+                <td class="header_table text-center recuadro">Unidades</td>
+                <td class="header_table recuadro">Artículo</td>
+                <td class="header_table text-center recuadro">PVD</td>
+            </tr>
+    @endif
+{{--
+    Fin control salto de pagina
+--}}
+    @endforeach
+    <tr>
+        <td colspan="2">
+            <table width="100%">
                 <tr>
-                    <td class="header_table text-center recuadro">Unidades</td>
-                    <td class="header_table recuadro">Artículo</td>
-                    <td class="header_table text-center recuadro">PVD</td>
-                </tr>
-                @foreach($lineas as $linea)
-
-                    @if($loop->iteration%7==0)
-                        <tr>
-                            <td class="page_break"></td>
-                        </tr>
-                    @endif
-                    <tr>
-                        <td class="unidad recuadro" style="width:10%">1</td>
-                        <td style="width:60%" class="recuadro">
-                            {{unserialize($linea->description)['producto']}}
-                            -
-                            {{unserialize($linea->description)['Cantidad seleccionada']}}
-                            -
-                            {{unserialize($linea->description)['Tipo Acabado']}}
-                            @if(count(unserialize($linea->options))>0)
-                                <hr/>
-                                @foreach (unserialize($linea->options) as $tipo=>$option)
-                                    {{$tipo}}: {{$option}}<br/>
-                                @endforeach
-                            @endif
-                        </td>
-                        <td class="recuadro" style="width:10%;text-align: center">{{$linea->price}} &euro;</td>
-                        {{--salen a 11 por pagina... --}}
-                    </tr>
-                @endforeach
-                <tr>
-                    <td colspan="2">
-                        <table width="100%">
+                    <td width="70%">
+                        <table class="recuadro" width="100%" style="border-collapse: collapse">
                             <tr>
-                                <td width="70%">
-                                    <table class="recuadro" width="100%" style="border-collapse: collapse">
-                                        <tr>
-                                            <td colspan="2">
-                                                Observaciones:
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="2">
-                                                &nbsp;
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="recuadro"
-                                                style="margin: 0 auto; padding: 0">{{HelperConfig::getConfig('_NAME_BANK_TRANSFER_PAY')}}
-                                                :
-                                            </td>
-                                            <td class="recuadro"
-                                                style="margin: 0 auto; padding: 0">{{HelperConfig::getConfig('_ACCOUNT_BANK_TRANSFER_PAY')}}</td>
-                                        </tr>
-                                    </table>
+                                <td colspan="2">
+                                    &nbsp;Observaciones:
                                 </td>
-                                <td width="30%" align="right">
-                                    <table width="100%" class="recuadro" style="border-collapse: collapse" border="1">
-                                        <tr>
-                                            <td class="info_precio recuadro">Base imponible</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="info_precio recuadro">IVA 21%</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="info_precio recuadro">Total</td>
-                                        </tr>
-                                    </table>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    &nbsp;
                                 </td>
+                            </tr>
+                            <tr>
+                                <td class="recuadro"
+                                    style="margin: 0 auto; padding: 0">
+                                    &nbsp;{{HelperConfig::getConfig('_NAME_BANK_TRANSFER_PAY')}}
+                                    :
+                                </td>
+                                <td class="recuadro"
+                                    style="margin: 0 auto; padding: 2px">
+                                    &nbsp;{{HelperConfig::getConfig('_ACCOUNT_BANK_TRANSFER_PAY')}}</td>
                             </tr>
                         </table>
                     </td>
-                    <td>
-                        <table width="100%" class="recuadro">
+                    <td width="30%" align="right">
+                        <table width="100%" class="recuadro" style="border-collapse: collapse" border="1">
                             <tr>
-                                <td class="precio">{{$pedido}} &euro;</td>
+                                <td class="info_precio recuadro">Base imponible</td>
                             </tr>
                             <tr>
-                                <td class="precio">{{HelperProduct::getIVA($pedido,'onlyIVA')}} &euro;</td>
+                                <td class="info_precio recuadro">IVA 21%</td>
                             </tr>
                             <tr>
-                                <td class="precio">{{HelperProduct::getIVA($pedido,'priceWithIVA')}} &euro;</td>
+                                <td class="info_precio recuadro">Total</td>
                             </tr>
                         </table>
-                    </td>
                     </td>
                 </tr>
             </table>
         </td>
-    </tr>
-    <tr>
+        <td>
+            <table width="100%" class="recuadro">
+                <tr>
+                    <td class="precio">{{$pedido}} &euro;</td>
+                </tr>
+                <tr>
+                    <td class="precio">{{HelperProduct::getIVA($pedido,'onlyIVA')}} &euro;</td>
+                </tr>
+                <tr>
+                    <td class="precio">{{HelperProduct::getIVA($pedido,'priceWithIVA')}} &euro;</td>
+                </tr>
+            </table>
+        </td>
+        </td>
     </tr>
 </table>
 </body>
