@@ -53,7 +53,7 @@ class ContactoController extends Controller
     {
         $mensaje = Contacto::select('id', 'nombre', 'telefono', 'email', 'mensaje', 'created_at')->where(['id' => $id])->first();
 
-        if (is_null($mensaje) || empty($mensaje)) {
+        if (empty($mensaje)) {
             abort('404');
         } else {
             return view('administracion/contactos/mostrarMensaje',
