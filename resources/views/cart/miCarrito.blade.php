@@ -22,6 +22,7 @@
             <table class="table table-condensed">
                 <thead>
                 <tr class="cart_menu">
+                    <td>Num. Productos</td>
                     <td class="image">Item</td>
                     <td class="description">Descripci&oacute;n</td>
                     <td class="price">Precio</td>
@@ -33,6 +34,7 @@
                 <tbody class="table-responsive">
                 @foreach($cart as $item)
                     <tr>
+                        <td>{{$loop->iteration}}</td>
                         <td class="cart_product" width="20%">
                             <a href="">
                                 <img src="{{asset('/storage/app/public/productos/'.HelperProduct::getImageProductForCartView($item->id))}}" alt="" class="text-center img-responsive">
@@ -92,7 +94,8 @@
                 </div>
             </div>
         </div>
-    </section><!--/#do_action-->
+    </section>
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">&nbsp;</div>
     @else
         <div class="text-center">
             <h3>Su cesta se encuentra vac&iacute;a</h3>
