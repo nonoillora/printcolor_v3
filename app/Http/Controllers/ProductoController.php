@@ -29,7 +29,8 @@ class ProductoController extends Controller
 
     public function getProducto(Request $request)
     {
-        $categorias = DB::table('categories')->select('*')->get();
+        //eliminamos las ofertas del panel izquierdo
+        $categorias = Category::where('id','!=','29')->where('category_is_active',1)->get();
         $product = DB::table('productos')->select('*')->where('id', $request->id)->first();
         if (!isset($product) || $product == [] || $product == null || $product->product_is_active == 0) {
             abort('404');
